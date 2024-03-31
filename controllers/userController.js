@@ -59,7 +59,7 @@ async function updateUser(req, res) {
     }
 };
 
-// delete user
+// delete user and their thoughts
 async function deleteUser(req, res) {
     try {
         const user = await User.findOneAndRemove({ _id: req.params.userId });
@@ -67,6 +67,8 @@ async function deleteUser(req, res) {
         if (!user) {
             return res.status(404).json({ message: "No user found with that ID!" })
         }
+
+        await Thought.deleteMany({ _id: { $in: user.thoughts }});
         res.status(200).json({ message: 'User successfully deleted' });
         console.log(`User deleted.`);
     } catch (err) {

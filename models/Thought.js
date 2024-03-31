@@ -2,47 +2,43 @@
 const { Schema, model } = require("mongoose");
 const reactionSchema = require("./Reaction");
 const dayjs = require('dayjs');
-const { format } = require("path");
+
+// using dayjs to format the timestamp
+const formatTime = () => {
+  return dayjs().format("MMM D, YYYY h:mm A")
+};
 
 // creating schema for users
 const thoughtSchema = new Schema(
-    {
-        thoughtText: {
-            type: String,
-            required: true,
-            minLength: 1,
-            maxLength: 280,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now(),
-            get: formatTime()
-        },
-        username: {
-            type: String,
-            required: true,
-        },
-        reactions: [reactionSchema],
+  {
+    thoughtText: {
+      type: String,
+      required: true,
+      minLength: 1,
+      maxLength: 280,
     },
-     // includes virtuals (overrides default behavior)
-     {
-        toJSON: {
-            virtuals: true,
-        },
-        id: false,
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      get: function() {
+        return formatTime();
+      },
     },
-    // includes getters
-    {
-        toJSON: {
-          getters: true,
-        },
-        id: false,
-      }
+    username: {
+      type: String,
+      required: true,
+    },
+    reactions: [reactionSchema],
+  },
+  // includes virtuals and getters (overrides default behavior)
+  {
+    toJSON: {
+      virtuals: true,
+      getters: true,
+    },
+    id: false,
+  },
 );
-
-function formatTime() {
-return dayjs().format("lll")
-}
 
 // virtual brings back number of reactions
 thoughtSchema.virtual('reactionCount')
