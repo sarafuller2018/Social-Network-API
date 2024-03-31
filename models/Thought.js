@@ -21,14 +21,20 @@ const thoughtSchema = new Schema(
         },
         reactions: [reactionSchema],
     },
-    // includes getters
-    {
+     // includes virtuals (overrides default behavior)
+     {
         toJSON: {
-          getters: true,
+            virtuals: true,
         },
         id: false,
-      }
+    }
 );
+
+// virtual brings back number of reactions
+thoughtSchema.virtual('reactionCount')
+  .get(function () {
+    return this.reactions.length;
+  });
 
 // creates a model called thought using the thoughtSchema
 const Thought = model("thought", thoughtSchema);
