@@ -31,5 +31,9 @@ const reactionSchema = new Schema(
       }
 );
 
+// getter method to format time 
+???
+
+
 // exports for use
 module.exports = reactionSchema;

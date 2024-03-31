@@ -1,6 +1,8 @@
 // importing mongoose and necessary files
 const { Schema, model } = require("mongoose");
 const reactionSchema = require("./Reaction");
+const dayjs = require('dayjs');
+const { format } = require("path");
 
 // creating schema for users
 const thoughtSchema = new Schema(
@@ -14,6 +16,7 @@ const thoughtSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now(),
+            get: formatTime()
         },
         username: {
             type: String,
@@ -27,8 +30,19 @@ const thoughtSchema = new Schema(
             virtuals: true,
         },
         id: false,
-    }
+    },
+    // includes getters
+    {
+        toJSON: {
+          getters: true,
+        },
+        id: false,
+      }
 );
+
+function formatTime() {
+return dayjs().format("lll")
+}
 
 // virtual brings back number of reactions
 thoughtSchema.virtual('reactionCount')
