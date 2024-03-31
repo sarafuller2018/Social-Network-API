@@ -4,7 +4,8 @@ const { User, Thought } = require("../models");
 // get all users
 async function getUsers(req, res) {
     try {
-        const users = await User.find();
+        const users = await User.find()
+        .select("-__v");
         res.json(users);
     } catch (err) {
         console.log(err);
@@ -21,6 +22,7 @@ async function getUserById(req, res) {
         if (!user) {
             return res.status(404).json({ message: "No user found with that ID!" })
         }
+        res.json(user);
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -45,6 +47,11 @@ async function updateUser(req, res) {
             { $set: req.body },
             { new: true }
         );
+
+        if (!user) {
+            return res.status(404).json({ message: "No user found with that ID!" })
+        }
+
         res.status(200).json(user);
         console.log(`Updated: ${user}`);
     } catch (err) {
@@ -60,6 +67,8 @@ async function deleteUser(req, res) {
         if (!user) {
             return res.status(404).json({ message: "No user found with that ID!" })
         }
+        res.status(200).json({ message: 'User successfully deleted' });
+        console.log(`User deleted.`);
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -71,7 +80,7 @@ async function addFriend(req, res) {
     try {
         const user = await User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $addToSet: { friends: req.body.friendId } },
+            { $addToSet: { friends: req.body.ObjectId } },
             { runValidators: true, new: true }
         );
 

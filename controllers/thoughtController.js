@@ -21,6 +21,7 @@ async function getThoughtById(req, res) {
         if (!thought) {
             return res.status(404).json({ message: "No thought found with that ID!" })
         }
+        res.json(thought);
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -69,6 +70,7 @@ async function deleteThought(req, res) {
         if (!thought) {
             return res.status(404).json({ message: "No thought found with that ID!" })
         }
+        res.status(200).json({ message: 'Thought successfully deleted' });
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -90,6 +92,7 @@ async function addReaction(req, res) {
 
         res.json(thought);
     } catch (err) {
+        console.log(err);
         res.status(500).json(err);
     }
 };
@@ -99,7 +102,7 @@ async function removeReaction(req, res) {
     try {
         const thought = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { reactions: req.body.reactionId } },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { runValidators: true, new: true }
         );
 
