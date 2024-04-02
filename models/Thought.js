@@ -3,11 +3,6 @@ const { Schema, model } = require("mongoose");
 const reactionSchema = require("./Reaction");
 const dayjs = require('dayjs');
 
-// using dayjs to format the timestamp
-const formatTime = () => {
-  return dayjs().format("MMM D, YYYY h:mm A")
-};
-
 // creating schema for users
 const thoughtSchema = new Schema(
   {
@@ -20,8 +15,8 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: function() {
-        return formatTime();
+      get: function formatTime(createdAt) {
+        return dayjs(createdAt).format("MMM D, YYYY h:mm A")
       },
     },
     username: {
